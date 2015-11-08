@@ -7,6 +7,10 @@ public class Percolation {
     private static final int BLOCKED = 0;
     private static final int OPEN = 1;
 
+    // indices of virtual sites
+    private final int VIRT_TOP = 0;
+    private final int VIRT_BOTTOM;
+
     // number of all sites in the grid
     private final int[] grid;
     // grid width (same as height)
@@ -24,6 +28,10 @@ public class Percolation {
         // at indices 0 and n * n + 1
         gridSize = gridWidth * gridWidth + 2;
         grid = new int[gridSize];
+        VIRT_BOTTOM = gridSize - 1;
+        // virtual sites are open by default
+        grid[VIRT_TOP] = OPEN;
+        grid[VIRT_BOTTOM] = OPEN;
     }
 
     public void open(int i, int j) {
