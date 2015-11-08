@@ -39,6 +39,10 @@ public class Percolation {
         qu = new QuickUnion(gridSize);
     }
 
+    public int getGridWidth() {
+        return gridWidth;
+    }
+
     public void open(int row, int col) {
         if (isOpen(row, col)) {
             return;

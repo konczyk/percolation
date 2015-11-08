@@ -8,12 +8,17 @@ public class PercolationVisualizer {
 
     private static final String TITLE = "Percolation";
 
-    private final int gridSize;
-    private final JPanel panel;
     private List<JLabel> sites = new ArrayList<>();
 
-    public PercolationVisualizer(int n) {
-        gridSize = n;
+    private final int gridWidth;
+
+    private final JPanel panel;
+
+    private final Percolation percolation;
+
+    public PercolationVisualizer(Percolation p) {
+        percolation = p;
+        gridWidth = percolation.getGridWidth();
         panel = createPanel();
     }
 
@@ -22,10 +27,10 @@ public class PercolationVisualizer {
     }
 
     private JPanel createPanel() {
-        JPanel p = new JPanel(new GridLayout(gridSize, gridSize, 1, 1));
+        JPanel p = new JPanel(new GridLayout(gridWidth, gridWidth, 1, 1));
         p.setBorder(new EmptyBorder(10, 10, 10, 10));
-        p.setPreferredSize(new Dimension(500, 500));
-        for (int i = 0; i < gridSize * gridSize; i++) {
+        p.setPreferredSize(new Dimension(600, 600));
+        for (int i = 0; i < gridWidth * gridWidth; i++) {
             JLabel label = new JLabel();
             label.setOpaque(true);
             label.setBackground(Color.BLACK);
@@ -39,7 +44,8 @@ public class PercolationVisualizer {
     }
 
     private static void showGUI() {
-        PercolationVisualizer pv = new PercolationVisualizer(10);
+        Percolation p = new Percolation(10);
+        PercolationVisualizer pv = new PercolationVisualizer(p);
 
         JFrame frame = new JFrame(TITLE);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
