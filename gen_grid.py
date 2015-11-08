@@ -2,10 +2,16 @@
 
 import argparse, random
 
+def grid_type(x):
+    x = int(x)
+    if x < 1 or x > 50:
+        raise argparse.ArgumentTypeError("Choose grid size between 1 and 50")
+    return x
+
 parser = argparse.ArgumentParser(
             description='Generate input to PercolationVisualizer.')
-parser.add_argument('size', metavar='n', type=int,
-                    help='grid size [1-50]')
+parser.add_argument('size', metavar='n', type=grid_type,
+                    help='grid size 1-50')
 
 args = parser.parse_args()
 
