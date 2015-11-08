@@ -39,7 +39,45 @@ public class Percolation {
         qu = new QuickUnion(gridSize);
     }
 
-    public void open(int i, int j) {
+    public void open(int row, int col) {
+        if (isOpen(row, col)) {
+            return;
+        }
+
+        // open the site
+        grid[translateCoords(row, col)] = OPEN;
+
+        // connect neighbors
+        connectNeighbors(row, col);
+    }
+
+    private void connectNeighbors(int row, int col) {
+        final int site = translateCoords(row, col);
+        int neighbor;
+
+        // connect to the top neighbor, check for virtual site
+        if (row == 1 || isOpen(row - 1, col)) {
+            neighbor = row == 1 ? VIRT_TOP
+                                : translateCoords(row - 1, col);
+            qu.union(site, neighbor);
+        }
+
+        // connect to the bottom neighbor, check for virtual site
+        if (row == gridWidth || isOpen(row + 1, col)) {
+            neighbor = row == gridWidth ? VIRT_BOTTOM
+                                        : translateCoords(row + 1, col);
+            qu.union(site, neighbor);
+        }
+
+        // connect to the right neighbor
+        if (col < gridWidth && isOpen(row, col + 1)) {
+            qu.union(site, translateCoords(row, col + 1));
+        }
+
+        // connect to the left neighbor
+        if (col > 1 && isOpen(row, col - 1)) {
+            qu.union(site, translateCoords(row, col - 1));
+        }
     }
 
     public boolean isOpen(int row, int col) {
