@@ -11,6 +11,8 @@ public class Percolation {
     private final int VIRT_TOP = 0;
     private final int VIRT_BOTTOM;
 
+    // connectivity data structure
+    private final QuickUnion qu;
     // number of all sites in the grid
     private final int[] grid;
     // grid width (same as height)
@@ -32,6 +34,9 @@ public class Percolation {
         // virtual sites are open by default
         grid[VIRT_TOP] = OPEN;
         grid[VIRT_BOTTOM] = OPEN;
+
+        // initialize QuickUnion data structure
+        qu = new QuickUnion(gridSize);
     }
 
     public void open(int i, int j) {
