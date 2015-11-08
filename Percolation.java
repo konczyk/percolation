@@ -3,9 +3,9 @@
  */
 public class Percolation {
 
-    // site status, default is open
-    public static final int OPEN = 0;
-    public static final int BLOCKED = 1;
+    // site status, default is blocked
+    private static final int BLOCKED = 0;
+    private static final int OPEN = 1;
 
     // number of all sites in the grid
     private int[] grid;
