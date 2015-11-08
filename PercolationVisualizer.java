@@ -8,7 +8,7 @@ import javax.swing.border.*;
 
 public class PercolationVisualizer {
 
-    private static final int DELAY = 500;
+    private static final int DELAY = 100;
 
     private static final String TITLE = "Percolation";
 
