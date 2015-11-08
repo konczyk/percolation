@@ -42,8 +42,8 @@ public class Percolation {
     public void open(int i, int j) {
     }
 
-    public boolean isOpen(int i, int j) {
-        return false;
+    public boolean isOpen(int row, int col) {
+        return grid[translateCoords(row, col)] == OPEN;
     }
 
     public boolean isFull(int i, int j) {
