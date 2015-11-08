@@ -27,7 +27,7 @@ public class PercolationVisualizer {
     }
 
     private JPanel createPanel() {
-        JPanel p = new JPanel(new GridLayout(gridWidth, gridWidth, 1, 1));
+        JPanel p = new JPanel(new GridLayout(gridWidth, gridWidth));
         p.setBorder(new EmptyBorder(10, 10, 10, 10));
         p.setPreferredSize(new Dimension(600, 600));
         for (int i = 0; i < gridWidth * gridWidth; i++) {
@@ -36,6 +36,7 @@ public class PercolationVisualizer {
             label.setBackground(Color.BLACK);
             label.setVerticalAlignment(JLabel.CENTER);
             label.setHorizontalAlignment(JLabel.CENTER);
+            label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             p.add(label);
             sites.add(label);
         }
