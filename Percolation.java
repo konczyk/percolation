@@ -8,9 +8,11 @@ public class Percolation {
     private static final int OPEN = 1;
 
     // number of all sites in the grid
-    private int[] grid;
+    private final int[] grid;
     // grid width (same as height)
-    private int gridWidth;
+    private final int gridWidth;
+    // total number of grid sites
+    private final int gridSize;
 
     public Percolation(int n) {
         if (n <= 0) {
@@ -20,7 +22,8 @@ public class Percolation {
         gridWidth = n;
         // grid includes two additional virtual sites
         // at indices 0 and n * n + 1
-        grid = new int[gridWidth * gridWidth + 2];
+        gridSize = gridWidth * gridWidth + 2;
+        grid = new int[gridSize];
     }
 
     public void open(int i, int j) {
