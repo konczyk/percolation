@@ -84,8 +84,13 @@ public class Percolation {
         return grid[translateCoords(row, col)] == OPEN;
     }
 
-    public boolean isFull(int i, int j) {
-        return false;
+    // check if the given site is connected with the virtual sites
+    public boolean isFull(int row, int col) {
+        final int site = translateCoords(row, col);
+
+        return isOpen(row, col) &&
+               qu.connected(site, VIRT_TOP) &&
+               qu.connected(site, VIRT_BOTTOM);
     }
 
     public boolean percolates() {
