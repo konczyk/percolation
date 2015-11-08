@@ -93,8 +93,9 @@ public class Percolation {
                qu.connected(site, VIRT_BOTTOM);
     }
 
+    // check percolation by examining connectivity of the virtual sites
     public boolean percolates() {
-        return false;
+        return qu.connected(VIRT_TOP, VIRT_BOTTOM);
     }
 
     // translate coordinates to grid array indices
