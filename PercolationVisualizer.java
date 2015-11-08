@@ -8,63 +8,89 @@ import javax.swing.border.*;
 
 public class PercolationVisualizer {
 
+    // delay between subsequent openings
     private static final int DELAY = 100;
 
     private static final String TITLE = "Percolation";
 
-    private List<JLabel> sites = new ArrayList<>();
-
-    private final int gridWidth;
-
-    private final JPanel panel;
-
-    private final Percolation percolation;
+    // list of grid sites
+    private final List<JLabel> sites = new ArrayList<>();
 
     // track the number of open sites
     private int openSites = 0;
-    // all available sites
-    private final int allSites;
 
-    private final Random rand = new Random();
+    private final JPanel panel;
 
-    public PercolationVisualizer(Percolation p) {
-        percolation = p;
-        gridWidth = percolation.getGridWidth();
-        allSites = gridWidth * gridWidth;
-        panel = createPanel();
-    }
+    // list of subsequent openings (from stdin)
+    private final List<int[]> openQueue = new ArrayList<>();
 
-    private JPanel createPanel() {
-        JPanel p = new JPanel(new GridLayout(gridWidth, gridWidth));
-        p.setBorder(new EmptyBorder(10, 10, 10, 10));
-        p.setPreferredSize(new Dimension(600, 600));
-        for (int i = 0; i < allSites; i++) {
-            JLabel label = new JLabel();
-            label.setOpaque(true);
-            label.setBackground(Color.BLACK);
-            label.setVerticalAlignment(JLabel.CENTER);
-            label.setHorizontalAlignment(JLabel.CENTER);
-            label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            p.add(label);
-            sites.add(label);
-        }
-
-        return p;
+    public PercolationVisualizer() {
+        panel = new JPanel();
+        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        panel.setPreferredSize(new Dimension(600, 600));
     }
 
     public JPanel getPanel() {
         return panel;
     }
 
-    public void generate() {
+    // create percolation grid, sites black (blocked) by default
+    private void createGrid(int width) {
+        panel.setLayout(new GridLayout(width, width));
+        for (int i = 0; i < width * width; i++) {
+            JLabel label = new JLabel();
+            label.setOpaque(true);
+            label.setBackground(Color.BLACK);
+            label.setVerticalAlignment(JLabel.CENTER);
+            label.setHorizontalAlignment(JLabel.CENTER);
+            label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            panel.add(label);
+            sites.add(label);
+        }
+    }
+
+    // update the grid view based on the percolation grid status
+    private void draw(Percolation p) {
+        // count open sites in the current Percolation state
+        int open = 0;
+        int gridWidth = p.getGridWidth();
+        for (int row = 0; row < gridWidth; row++) {
+            for (int col = 0; col < gridWidth; col ++) {
+                // index of the label in the visual grid
+                int idx = row * gridWidth + col;
+                // percolation grid starts from 1
+                if (p.isFull(row + 1, col + 1)) {
+                    sites.get(idx).setBackground(Color.CYAN);
+                    open++;
+                } else if (p.isOpen(row + 1, col + 1)) {
+                    sites.get(idx).setBackground(Color.WHITE);
+                    open++;
+                }
+            }
+        }
+        openSites = open;
+    }
+
+    // read user input and continously open sites with a delay
+    public void run() {
+        Scanner sc = new Scanner(System.in);
+        int gridWidth = sc.nextInt();
+        this.createGrid(gridWidth);
+        while (sc.hasNext()) {
+            openQueue.add(new int[]{sc.nextInt(), sc.nextInt()});
+        }
+        final Percolation p = new Percolation(gridWidth);
+        final ListIterator<int[]> it = openQueue.listIterator();
+
         Timer timer = new Timer(DELAY, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int row = rand.nextInt(gridWidth) + 1;
-                int col = rand.nextInt(gridWidth) + 1;
-                percolation.open(row, col);
-                redraw();
-                if (openSites == allSites || percolation.percolates()) {
+                int[] item = it.next();
+                p.open(item[0], item[1]);
+                // redraw percolation
+                draw(p);
+                // check if we shoud stop
+                if (openSites == sites.size() || p.percolates()) {
                     ((Timer)e.getSource()).stop();
                 }
             }
@@ -73,30 +99,8 @@ public class PercolationVisualizer {
         timer.start();
     }
 
-    // update the grid view based on the percolation grid status
-    private void redraw() {
-        int open = 0;
-        for (int row = 0; row < gridWidth; row++) {
-            for (int col = 0; col < gridWidth; col ++) {
-                // index of the label in the visual grid
-                int idx = row * gridWidth + col;
-                // percolation grid starts from 1
-                if (percolation.isFull(row + 1, col + 1)) {
-                    sites.get(idx).setBackground(Color.CYAN);
-                    open++;
-                } else if (percolation.isOpen(row + 1, col + 1)) {
-                    sites.get(idx).setBackground(Color.WHITE);
-                    open++;
-                }
-            }
-        }
-
-        openSites = open;
-    }
-
     private static void showGUI() {
-        Percolation p = new Percolation(10);
-        PercolationVisualizer pv = new PercolationVisualizer(p);
+        PercolationVisualizer pv = new PercolationVisualizer();
 
         JFrame frame = new JFrame(TITLE);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -110,7 +114,7 @@ public class PercolationVisualizer {
         frame.setResizable(false);
         frame.setVisible(true);
 
-        pv.generate();
+        pv.run();
     }
 
     public static void main(String[] args) {
