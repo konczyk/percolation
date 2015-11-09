@@ -19,15 +19,41 @@ public class PercolationVisualizer {
     // track the number of open sites
     private int openSites = 0;
 
-    private final JPanel panel;
+    // main panel with the percolation grid
+    private final JPanel gridPanel;
+
+    // status panel with basic statistics
+    private final JPanel statusPanel;
+    private final JLabel openLabel;
+    private final JLabel thresholdLabel;
+    private final JLabel percolationLabel;
 
     // list of subsequent openings (from stdin)
     private final List<int[]> openQueue = new ArrayList<>();
 
     public PercolationVisualizer() {
-        panel = new JPanel();
-        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        panel.setPreferredSize(new Dimension(600, 600));
+        gridPanel = new JPanel();
+        gridPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        gridPanel.setPreferredSize(new Dimension(600, 600));
+
+        statusPanel = new JPanel(new GridLayout(1, 3));
+
+        openLabel = new JLabel();
+        openLabel.setSize(openLabel.getPreferredSize());
+        thresholdLabel = new JLabel();
+        percolationLabel = new JLabel();
+
+        statusPanel.add(openLabel);
+        statusPanel.add(thresholdLabel);
+        statusPanel.add(percolationLabel);
+    }
+
+    public JPanel getGridPanel() {
+        return gridPanel;
+    }
+
+    public JPanel getStatusPanel() {
+        return statusPanel;
     }
 
     public JPanel getPanel() {
@@ -36,7 +62,7 @@ public class PercolationVisualizer {
 
     // create percolation grid, sites black (blocked) by default
     private void createGrid(int width) {
-        panel.setLayout(new GridLayout(width, width));
+        gridPanel.setLayout(new GridLayout(width, width));
         for (int i = 0; i < width * width; i++) {
             JLabel label = new JLabel();
             label.setOpaque(true);
@@ -44,7 +70,7 @@ public class PercolationVisualizer {
             label.setVerticalAlignment(JLabel.CENTER);
             label.setHorizontalAlignment(JLabel.CENTER);
             label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            panel.add(label);
+            gridPanel.add(label);
             sites.add(label);
         }
     }
@@ -103,8 +129,10 @@ public class PercolationVisualizer {
         PercolationVisualizer pv = new PercolationVisualizer();
 
         JFrame frame = new JFrame(TITLE);
+        frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(pv.getPanel());
+        frame.add(pv.getGridPanel(), BorderLayout.CENTER);
+        frame.add(pv.getStatusPanel(), BorderLayout.SOUTH);
 
         // center on the screen
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
