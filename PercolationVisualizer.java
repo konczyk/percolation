@@ -134,12 +134,8 @@ public class PercolationVisualizer {
         frame.add(pv.getGridPanel(), BorderLayout.CENTER);
         frame.add(pv.getStatusPanel(), BorderLayout.SOUTH);
 
-        // center on the screen
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setLocation(dim.width / 2, dim.height / 2);
-
         frame.pack();
-        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
         pv.run();
