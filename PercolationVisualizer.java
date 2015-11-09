@@ -12,12 +12,18 @@ public class PercolationVisualizer {
     private static final int DELAY = 100;
 
     private static final String TITLE = "Percolation";
+    private static final String OPEN_INFO = "%d/%d open sites";
+    private static final String THRESHOLD_INFO = "%.1f%% threshold";
 
     // list of grid sites
     private final List<JLabel> sites = new ArrayList<>();
 
     // track the number of open sites
     private int openSites = 0;
+    // save the number of all sites
+    private int allSites;
+    // track percolation status
+    private boolean percolates = false;
 
     // main panel with the percolation grid
     private final JPanel gridPanel;
@@ -33,15 +39,18 @@ public class PercolationVisualizer {
 
     public PercolationVisualizer() {
         gridPanel = new JPanel();
-        gridPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        gridPanel.setBorder(new EmptyBorder(10, 10, 0, 10));
         gridPanel.setPreferredSize(new Dimension(600, 600));
 
         statusPanel = new JPanel(new GridLayout(1, 3));
+        statusPanel.setBorder(new EmptyBorder(5, 10, 10, 10));
 
         openLabel = new JLabel();
-        openLabel.setSize(openLabel.getPreferredSize());
+        openLabel.setHorizontalAlignment(SwingConstants.CENTER);
         thresholdLabel = new JLabel();
+        thresholdLabel.setHorizontalAlignment(SwingConstants.CENTER);
         percolationLabel = new JLabel();
+        percolationLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         statusPanel.add(openLabel);
         statusPanel.add(thresholdLabel);
@@ -56,12 +65,20 @@ public class PercolationVisualizer {
         return statusPanel;
     }
 
-    public JPanel getPanel() {
-        return panel;
+    // update information in the status panel on each draw
+    private void updateStatusPanel() {
+        openLabel.setText(
+            String.format(OPEN_INFO, openSites, allSites));
+        thresholdLabel.setText(
+            String.format(THRESHOLD_INFO, openSites/(double)allSites * 100));
+        percolationLabel.setText(
+            percolates ? "percolates" : "does not percolate");
     }
 
     // create percolation grid, sites black (blocked) by default
     private void createGrid(int width) {
+        // init the number of sites
+        allSites = width * width;
         gridPanel.setLayout(new GridLayout(width, width));
         for (int i = 0; i < width * width; i++) {
             JLabel label = new JLabel();
@@ -73,6 +90,8 @@ public class PercolationVisualizer {
             gridPanel.add(label);
             sites.add(label);
         }
+        // init status panel information
+        updateStatusPanel();
     }
 
     // update the grid view based on the percolation grid status
@@ -118,7 +137,10 @@ public class PercolationVisualizer {
                 // check if we shoud stop
                 if (openSites == sites.size() || p.percolates()) {
                     ((Timer)e.getSource()).stop();
+                    // save percolation status
+                    percolates = p.percolates();
                 }
+                updateStatusPanel();
             }
         });
         timer.setInitialDelay(DELAY);
