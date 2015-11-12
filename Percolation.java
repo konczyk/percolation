@@ -8,7 +8,7 @@ public class Percolation {
     private static final int OPEN = 1;
     // indicate if a site is open and connected to top/bottom row
     private static final int CONN_TOP = 2;
-    private static final int CONN_BOTTOM = 3;
+    private static final int CONN_BOTTOM = 4;
 
     // indices of virtual sites
     private final int VIRT_TOP = 0;
@@ -51,12 +51,12 @@ public class Percolation {
         // open the site
         // special flags for top/bottom sites
         int site = translateCoords(row, col);
+        grid[site] = OPEN;
         if (row == 1) {
-            grid[site] = CONN_TOP;
-        } else if (row == gridWidth) {
-            grid[site] = CONN_BOTTOM;
-        } else {
-            grid[site] = OPEN;
+            grid[site] |= CONN_TOP;
+        }
+        if (row == gridWidth) {
+            grid[site] |= CONN_BOTTOM;
         }
 
         // connect neighbors
