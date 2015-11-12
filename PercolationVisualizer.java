@@ -130,17 +130,20 @@ public class PercolationVisualizer {
         Timer timer = new Timer(DELAY, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int[] item = it.next();
-                p.open(item[0], item[1]);
-                // redraw percolation
-                draw(p);
-                // check if we shoud stop
-                if (openSites == sites.size() || p.percolates()) {
+                if (!it.hasNext()) {
                     ((Timer)e.getSource()).stop();
-                    // save percolation status
-                    percolates = p.percolates();
+                } else {
+                    int[] item = it.next();
+                    p.open(item[0], item[1]);
+                    // redraw percolation
+                    draw(p);
+                    // check status
+                    if (openSites == sites.size() || p.percolates()) {
+                        // save percolation status
+                        percolates = p.percolates();
+                    }
+                    updateStatusPanel();
                 }
-                updateStatusPanel();
             }
         });
         timer.setInitialDelay(DELAY);
