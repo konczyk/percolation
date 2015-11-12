@@ -60,25 +60,29 @@ public class Percolation {
         if (row == 1 || isOpen(row - 1, col)) {
             neighbor = row == 1 ? VIRT_TOP
                                 : translateCoords(row - 1, col);
-            qu.union(site, neighbor);
+            connect(site, neighbor);
         }
 
         // connect to the bottom neighbor, check for virtual site
         if (row == gridWidth || isOpen(row + 1, col)) {
             neighbor = row == gridWidth ? VIRT_BOTTOM
                                         : translateCoords(row + 1, col);
-            qu.union(site, neighbor);
+            connect(site, neighbor);
         }
 
         // connect to the right neighbor
         if (col < gridWidth && isOpen(row, col + 1)) {
-            qu.union(site, translateCoords(row, col + 1));
+            connect(site, translateCoords(row, col + 1));
         }
 
         // connect to the left neighbor
         if (col > 1 && isOpen(row, col - 1)) {
-            qu.union(site, translateCoords(row, col - 1));
+            connect(site, translateCoords(row, col - 1));
         }
+    }
+
+    private void connect(int site1, int site2) {
+        qu.union(site1, site2);
     }
 
     public boolean isOpen(int row, int col) {
