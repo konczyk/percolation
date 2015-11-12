@@ -31,9 +31,6 @@ public class Percolation {
         gridSize = gridWidth * gridWidth + 2;
         grid = new int[gridSize];
         VIRT_BOTTOM = gridSize - 1;
-        // virtual sites are open by default
-        grid[VIRT_TOP] = OPEN;
-        grid[VIRT_BOTTOM] = OPEN;
 
         // initialize QuickUnion data structure
         qu = new QuickUnion(gridSize);
