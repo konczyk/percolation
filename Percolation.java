@@ -6,6 +6,9 @@ public class Percolation {
     // site status, default is blocked
     private static final int BLOCKED = 0;
     private static final int OPEN = 1;
+    // indicate if a site is open and connected to top/bottom row
+    private static final int CONN_TOP = 2;
+    private static final int CONN_BOTTOM = 3;
 
     // indices of virtual sites
     private final int VIRT_TOP = 0;
@@ -46,7 +49,15 @@ public class Percolation {
         }
 
         // open the site
-        grid[translateCoords(row, col)] = OPEN;
+        // special flags for top/bottom sites
+        int site = translateCoords(row, col);
+        if (row == 1) {
+            grid[site] = CONN_TOP;
+        } else if (row == gridWidth) {
+            grid[site] = CONN_BOTTOM;
+        } else {
+            grid[site] = OPEN;
+        }
 
         // connect neighbors
         connectNeighbors(row, col);
@@ -86,7 +97,7 @@ public class Percolation {
     }
 
     public boolean isOpen(int row, int col) {
-        return grid[translateCoords(row, col)] == OPEN;
+        return grid[translateCoords(row, col)] != BLOCKED;
     }
 
     // check if the given site is connected with the virtual sites
