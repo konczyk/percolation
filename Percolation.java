@@ -6,9 +6,8 @@ public class Percolation {
     // site status, default is blocked
     private static final int BLOCKED = 0;
     private static final int OPEN = 1;
-    // indicate if a site is open and connected to top/bottom row
-    private static final int CONN_TOP = 2;
-    private static final int CONN_BOTTOM = 4;
+    // indicate if a site is open and connected to bottom row
+    private static final int CONN_BOTTOM = 2;
 
     // indices of virtual sites
     private final int VIRT_TOP = 0;
@@ -49,12 +48,9 @@ public class Percolation {
         }
 
         // open the site
-        // special flags for top/bottom sites
         int site = translateCoords(row, col);
         grid[site] = OPEN;
-        if (row == 1) {
-            grid[site] |= CONN_TOP;
-        }
+        // special flags for bottom sites
         if (row == gridWidth) {
             grid[site] |= CONN_BOTTOM;
         }
@@ -65,20 +61,15 @@ public class Percolation {
 
     private void connectNeighbors(int row, int col) {
         final int site = translateCoords(row, col);
-        int neighbor;
 
-        // connect to the top neighbor, check for virtual site
+        // connect to the top neighbor, skip virtual site
         if (row == 1 || isOpen(row - 1, col)) {
-            neighbor = row == 1 ? VIRT_TOP
-                                : translateCoords(row - 1, col);
-            connect(site, neighbor);
+            connect(site, row == 1 ? VIRT_TOP : translateCoords(row - 1, col));
         }
 
-        // connect to the bottom neighbor, check for virtual site
-        if (row == gridWidth || isOpen(row + 1, col)) {
-            neighbor = row == gridWidth ? VIRT_BOTTOM
-                                        : translateCoords(row + 1, col);
-            connect(site, neighbor);
+        // connect to the bottom neighbor, skip virtual site
+        if (row < gridWidth && isOpen(row + 1, col)) {
+            connect(site, translateCoords(row + 1, col));
         }
 
         // connect to the right neighbor
@@ -90,23 +81,34 @@ public class Percolation {
         if (col > 1 && isOpen(row, col - 1)) {
             connect(site, translateCoords(row, col - 1));
         }
+
+        // union with virtual bottom if top is connected
+        final int root = qu.find(site);
+        if (qu.connected(root, VIRT_TOP) &&
+            (grid[root] & CONN_BOTTOM) == CONN_BOTTOM)
+        {
+            qu.union(root, VIRT_BOTTOM);
+        }
+
     }
 
-    private void connect(int site1, int site2) {
-        qu.union(site1, site2);
+    private void connect(int site, int neighbor) {
+        final int siteRootStatus = grid[qu.find(site)];
+        final int neighborRootStatus = grid[qu.find(neighbor)];
+        qu.union(site, neighbor);
+        // update site's root status after union
+        grid[qu.find(site)] = siteRootStatus | neighborRootStatus;
     }
 
     public boolean isOpen(int row, int col) {
         return grid[translateCoords(row, col)] != BLOCKED;
     }
 
-    // check if the given site is connected with the virtual sites
+    // check if the given site is connected with the virtual top site
     public boolean isFull(int row, int col) {
         final int site = translateCoords(row, col);
 
-        return isOpen(row, col) &&
-               qu.connected(site, VIRT_TOP) &&
-               qu.connected(site, VIRT_BOTTOM);
+        return isOpen(row, col) && qu.connected(site, VIRT_TOP);
     }
 
     // check percolation by examining connectivity of the virtual sites
