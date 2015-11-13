@@ -6,7 +6,7 @@ Estimate the value of the percolation threshold via Monte Carlo simulation.
 
 A simple gradle task builds and copies compiled files into the main directory:
 
-    gradle deploy
+    ./gradlew deploy
 
 Quick Union with 100000 nodes and 200000 random connections:
 
