@@ -1,15 +1,55 @@
+import java.util.Random;
+
 public class PercolationStats {
 
+    // number of percolation tests to run
     private final int runs;
-    private final int sites;
+    // percolation grid width (same as height)
+    private final int gridWidth;
 
-    public PercolationStats(int n, int t) {
-        if (n <= 0 || t <= 0) {
+    private Random rand = new Random();
+
+    private double[] results;
+
+    public PercolationStats(int gridWidth, int runs) {
+        if (gridWidth <= 0 || runs <= 0) {
             throw new IllegalArgumentException(
-                "n and t must be greater than 0");
+                "grid width and runs must be greater than 0");
         }
-        runs = t;
-        sites = n*n;
+        this.gridWidth = gridWidth;
+        this.runs = runs;
+    }
+
+    // compute percolation results
+    public double[] computeResults() {
+        if (results != null) {
+            return results;
+        }
+        final int sites= gridWidth * gridWidth;
+        results = new double[runs];
+
+        for (int i = 0; i < runs; i++) {
+            Percolation p = new Percolation(gridWidth);
+            int open = 0;
+            while (!p.percolates()) {
+                randomOpen(p);
+                open++;
+            }
+            results[i] = (double)open / sites;
+        }
+
+        return results;
+    }
+
+    private void randomOpen(Percolation p) {
+        while (true) {
+            int row = 1 + rand.nextInt(gridWidth);
+            int col = 1 + rand.nextInt(gridWidth);
+            if (!p.isOpen(row, col)) {
+                p.open(row, col);
+                break;
+            }
+        }
     }
 
     // sample mean of percolation threshold
