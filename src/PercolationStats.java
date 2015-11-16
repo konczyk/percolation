@@ -88,6 +88,14 @@ public class PercolationStats {
     }
 
     public static void main(String[] args) {
+        int grid = Integer.parseInt(args[0]);
+        int runs = Integer.parseInt(args[1]);
+        PercolationStats stats = new PercolationStats(grid, runs);
+
+        System.out.println("mean\t\t\t= " + stats.mean());
+        System.out.println("stddev\t\t\t= " + stats.stddev());
+        System.out.println("95% confidence interval = " + stats.confidenceLo()
+                            + ", " + stats.confidenceHi());
     }
 
 }
