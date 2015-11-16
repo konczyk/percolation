@@ -54,22 +54,37 @@ public class PercolationStats {
 
     // sample mean of percolation threshold
     public double mean() {
-        return 0;
+        double[] res = computeResults();
+
+        double sum = 0;
+        for (double result: res) {
+            sum += result;
+        }
+
+        return sum / res.length;
     }
 
     // sample standard deviation of percolation threshold
     public double stddev() {
-        return 0;
+        double[] res = computeResults();
+
+        double mean = mean();
+        double sum = 0;
+        for (double result: res) {
+            sum += (result - mean) * (result - mean);
+        }
+
+        return Math.sqrt(sum / (res.length - 1));
     }
 
     // low  endpoint of 95% confidence interval
     public double confidenceLo() {
-        return 0;
+        return mean() - (1.96 * stddev()) / Math.sqrt(runs);
     }
 
     // high endpoint of 95% confidence interval
     public double confidenceHi() {
-        return 0;
+        return mean() + (1.96 * stddev()) / Math.sqrt(runs);
     }
 
     public static void main(String[] args) {

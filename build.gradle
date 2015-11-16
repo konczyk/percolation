@@ -6,7 +6,8 @@ repositories {
 
 dependencies {
     testCompile 'junit:junit:4.12'
-    testCompile group: 'com.tngtech.java', name: 'junit-dataprovider', version: '1.10.2'
+    testCompile 'com.tngtech.java:junit-dataprovider:1.10.2'
+    testCompile 'org.mockito:mockito-core:2.0.31-beta'
 }
 
 sourceSets {
