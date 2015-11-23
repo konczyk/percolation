@@ -139,6 +139,7 @@ public class PercolationVisualizer {
                     p.open(item[0], item[1]);
                     // redraw percolation
                     draw(p);
+                    Toolkit.getDefaultToolkit().sync();
                     // check status
                     if (openSites == sites.size() || p.percolates()) {
                         // save percolation status
