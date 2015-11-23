@@ -28,12 +28,3 @@ test {
         events "passed", "skipped", "failed", "standardOut", "standardError"
     }
 }
-
-task deploy(dependsOn: build) {
-    doLast {
-        copy {
-            from 'build/classes/main'
-            into '.'
-        }
-    }
-}
