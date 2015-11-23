@@ -62,21 +62,24 @@ class QuickUnion {
     }
 
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
+        int nodes = 0;
+        int components = 0;
+        try (Scanner sc = new Scanner(System.in)) {
+            nodes = sc.nextInt();
 
-        QuickUnion qu = new QuickUnion(n);
-        while (sc.hasNext()) {
-            int p = sc.nextInt();
-            int q = sc.nextInt();
-            if (!qu.connected(p, q)) {
-                qu.union(p, q);
-                System.out.println(p + " " + q);
+            QuickUnion qu = new QuickUnion(nodes);
+            while (sc.hasNext()) {
+                int p = sc.nextInt();
+                int q = sc.nextInt();
+                if (!qu.connected(p, q)) {
+                    qu.union(p, q);
+                    System.out.println(p + " " + q);
+                }
             }
+            components = qu.count();
         }
-
-        System.out.println("Nodes: " + n);
-        System.out.println("Components: " + qu.count());
+        System.out.println("Nodes: " + nodes);
+        System.out.println("Components: " + components);
     }
 
 }

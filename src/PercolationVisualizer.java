@@ -118,11 +118,13 @@ public class PercolationVisualizer {
 
     // read user input and continously open sites with a delay
     public void run() {
-        Scanner sc = new Scanner(System.in);
-        int gridWidth = sc.nextInt();
-        this.createGrid(gridWidth);
-        while (sc.hasNext()) {
-            openQueue.add(new int[]{sc.nextInt(), sc.nextInt()});
+        int gridWidth = 0;
+        try (Scanner sc = new Scanner(System.in)) {
+            gridWidth = sc.nextInt();
+            this.createGrid(gridWidth);
+            while (sc.hasNext()) {
+                openQueue.add(new int[]{sc.nextInt(), sc.nextInt()});
+            }
         }
         final Percolation p = new Percolation(gridWidth);
         final ListIterator<int[]> it = openQueue.listIterator();
