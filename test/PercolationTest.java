@@ -1,61 +1,52 @@
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import junitparams.*;
 
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
-
-@RunWith(DataProviderRunner.class)
+@RunWith(JUnitParamsRunner.class)
 public class PercolationTest {
-
-    private Percolation perc;
-
-    @Before
-    public void setUp() {
-        perc = new Percolation(3);
-    }
 
     @Test(expected = IllegalArgumentException.class)
     public void throwsExceptionIfSitesNumberIsNonPositive() {
         Percolation p = new Percolation(0);
     }
 
-    @DataProvider
-    public static String[] invalidSiteProvider() {
-        return new String[] {
-            "0, 0",
-            "1, 0",
-            "4, 2"
-        };
-    }
-
     @Test(expected = IllegalArgumentException.class)
-    @UseDataProvider("invalidSiteProvider")
+    @Parameters({
+        "0, 0",
+        "1, 0",
+        "4, 2"})
     public void throwsExceptionWhenOpenInvalidSite(int row, int col) {
+        Percolation perc = new Percolation(3);
         perc.open(row, col);
     }
 
     @Test
     public void marksTopSiteAsFull() {
+        Percolation perc = new Percolation(3);
+
         perc.open(1, 1);
 
-        assertTrue(perc.isFull(1, 1));
+        assertThat(perc.isFull(1, 1), is(true));
     }
 
     @Test
-    public void marksTopConnectedSiteAsFull() {
+    public void marksSiteConnectedToTopAsFull() {
+        Percolation perc = new Percolation(3);
+
         perc.open(1, 1);
         perc.open(1, 2);
 
-        assertTrue(perc.isFull(1, 2));
+        assertThat(perc.isFull(1, 2), is(true));
     }
 
     @Test
     public void doesNotMarkBottomSitesAsFull() {
+        Percolation perc = new Percolation(3);
+
         // make the system percolate
         perc.open(1, 1);
         perc.open(2, 1);
@@ -63,40 +54,46 @@ public class PercolationTest {
         // open bottom site outside percolation tube
         perc.open(3, 3);
 
-        assertFalse(perc.isFull(3, 3));
+        assertThat(perc.isFull(3, 3), is(false));
     }
 
     @Test
-    public void percolatesWhenOpenTopBottom() {
+    public void percolatesWhenTopAndBottomSitesConnected() {
+        Percolation perc = new Percolation(3);
+
         perc.open(1, 1);
         perc.open(2, 1);
         perc.open(3, 1);
 
-        assertTrue(perc.percolates());
+        assertThat(perc.percolates(), is(true));
     }
 
     @Test
-    public void percolatesWhenMiddleJoined() {
+    public void percolatesWhenMiddleSiteCreatesConnection() {
+        Percolation perc = new Percolation(3);
+
         perc.open(1, 1);
         perc.open(2, 1);
         perc.open(3, 3);
         perc.open(3, 2);
 
-        assertFalse(perc.percolates());
+        assertThat(perc.percolates(), is(false));
 
         // last site to make the percolation true
         perc.open(2, 2);
 
-        assertTrue(perc.percolates());
+        assertThat(perc.percolates(), is(true));
     }
 
     @Test
     public void doesNotPercolate() {
+        Percolation perc = new Percolation(3);
+
         perc.open(1, 1);
         perc.open(3, 3);
         perc.open(2, 2);
 
-        assertFalse(perc.percolates());
+        assertThat(perc.percolates(), is(false));
     }
 
 }

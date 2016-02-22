@@ -1,57 +1,30 @@
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.closeTo;
 import static org.mockito.Mockito.*;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import junitparams.*;
 
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
-
-@RunWith(DataProviderRunner.class)
+@RunWith(JUnitParamsRunner.class)
 public class PercolationStatsTest {
 
-    private PercolationStats mockedStats;
-
-    @Before
-    public void setUp() {
-        mockedStats = spy(new PercolationStats(1, 2));
-        when(mockedStats.computeResults()).thenReturn(new double[]{2, 3, 5});
-    }
-
-    @DataProvider
-    public static String[] invalidArgsProvider() {
-        return new String[] {
-            "0, 0",
-            "1, 0",
-            "0, 1"
-        };
-    }
-
     @Test(expected = IllegalArgumentException.class)
-    @UseDataProvider("invalidArgsProvider")
+    @Parameters({
+        "0, 0",
+        "1, 0",
+        "0, 1"})
     public void throwsExceptionIfSitesOrRunsNumberIsNonPositive(int n, int t) {
         PercolationStats ps = new PercolationStats(n, t);
     }
 
-    @DataProvider
-    public static String[] argsProvider() {
-        return new String[] {
-             // small sites have unusually high threshold
-            "2,  100,  0.1",
-            "8,  100,  0.02",
-            "10, 1000, 0.02",
-            "15, 1000, 0.02",
-        };
-    }
-
     @Test
-    @UseDataProvider("argsProvider")
-    public void computedResultsWithinThreshold(int gw, int r, double delta) {
+    @Parameters(method="argsProvider")
+    public void percolationThresholdsWithinBounds(int gw, int r, double delta) {
         PercolationStats ps = new PercolationStats(gw, r);
-        double[] res = ps.computeResults();
+        double[] res = ps.collectPercolationThresholds();
         double sum = 0, avg;
         for (double s: res) {
             sum += s;
@@ -60,29 +33,45 @@ public class PercolationStatsTest {
 
         // an average threshold is known as ~0.59, so the randomized results
         // should be somewhere within the bounds +- delta
-        assertTrue(avg < 0.59 + delta && avg > 0.59 - delta);
+        assertThat(avg, is(closeTo(0.59, delta)));
+    }
+
+    private Object[] argsProvider() {
+        return new Object[]{
+            // small sites have unusually high threshold
+            new Object[]{2,  100,  0.1},
+            new Object[]{8,  100,  0.02},
+            new Object[]{10, 1000, 0.02},
+            new Object[]{15, 1000, 0.02}
+        };
     }
 
     @Test
-    public void calculatesMean() {
-        assertEquals(3.3, mockedStats.mean(), 0.1);
+    public void mean() {
+        PercolationStats statsMock = spy(new PercolationStats(1, 2));
+        when(statsMock.collectPercolationThresholds())
+            .thenReturn(new double[]{2, 3, 5});
+
+        assertThat(statsMock.mean(), is(closeTo(3.3, 0.1)));
     }
 
     @Test
-    public void calculatesStdDeviation() {
-        when(mockedStats.mean()).thenReturn(3.3);
+    public void stddev() {
+        PercolationStats statsMock = spy(new PercolationStats(1, 2));
+        when(statsMock.collectPercolationThresholds())
+            .thenReturn(new double[]{2, 3, 5});
+        when(statsMock.mean()).thenReturn(3.3);
 
-        assertEquals(1.5, mockedStats.stddev(), 0.1);
+        assertThat(statsMock.stddev(), is(closeTo(1.5, 0.1)));
     }
 
     @Test
-    public void calculatesConfidence() {
-        when(mockedStats.mean()).thenReturn(4.5);
-        when(mockedStats.stddev()).thenReturn(1.2);
+    public void confidenceInterval() {
+        PercolationStats statsMock = spy(new PercolationStats(1, 2));
+        when(statsMock.mean()).thenReturn(4.5);
+        when(statsMock.stddev()).thenReturn(1.2);
 
-
-        assertEquals(2.8, mockedStats.confidenceLo(), 0.1);
-        assertEquals(6.1, mockedStats.confidenceHi(), 0.1);
+        assertThat(statsMock.confidenceLo(), is(closeTo(2.8, 0.1)));
+        assertThat(statsMock.confidenceHi(), is(closeTo(6.1, 0.1)));
     }
-
 }

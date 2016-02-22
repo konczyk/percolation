@@ -2,14 +2,12 @@ import java.util.Random;
 
 public class PercolationStats {
 
-    // number of percolation tests to run
     private final int runs;
-    // percolation grid width (same as height)
     private final int gridWidth;
 
     private Random rand = new Random();
 
-    private double[] results;
+    private double[] percolationThresholds;
 
     public PercolationStats(int gridWidth, int runs) {
         if (gridWidth <= 0 || runs <= 0) {
@@ -20,63 +18,6 @@ public class PercolationStats {
         this.runs = runs;
     }
 
-    // compute percolation results
-    public double[] computeResults() {
-        if (results != null) {
-            return results;
-        }
-        final int sites= gridWidth * gridWidth;
-        results = new double[runs];
-
-        for (int i = 0; i < runs; i++) {
-            Percolation p = new Percolation(gridWidth);
-            int open = 0;
-            while (!p.percolates()) {
-                randomOpen(p);
-                open++;
-            }
-            results[i] = (double)open / sites;
-        }
-
-        return results;
-    }
-
-    private void randomOpen(Percolation p) {
-        while (true) {
-            int row = 1 + rand.nextInt(gridWidth);
-            int col = 1 + rand.nextInt(gridWidth);
-            if (!p.isOpen(row, col)) {
-                p.open(row, col);
-                break;
-            }
-        }
-    }
-
-    // sample mean of percolation threshold
-    public double mean() {
-        double[] res = computeResults();
-
-        double sum = 0;
-        for (double result: res) {
-            sum += result;
-        }
-
-        return sum / res.length;
-    }
-
-    // sample standard deviation of percolation threshold
-    public double stddev() {
-        double[] res = computeResults();
-
-        double mean = mean();
-        double sum = 0;
-        for (double result: res) {
-            sum += (result - mean) * (result - mean);
-        }
-
-        return Math.sqrt(sum / (res.length - 1));
-    }
-
     // low  endpoint of 95% confidence interval
     public double confidenceLo() {
         return mean() - (1.96 * stddev()) / Math.sqrt(runs);
@@ -85,6 +26,63 @@ public class PercolationStats {
     // high endpoint of 95% confidence interval
     public double confidenceHi() {
         return mean() + (1.96 * stddev()) / Math.sqrt(runs);
+    }
+
+    // sample mean of percolation threshold
+    public double mean() {
+        double[] thresholds = collectPercolationThresholds();
+
+        double sum = 0;
+        for (double threshold: thresholds) {
+            sum += threshold;
+        }
+
+        return sum / thresholds.length;
+    }
+
+    // sample standard deviation of percolation threshold
+    public double stddev() {
+        double[] thresholds = collectPercolationThresholds();
+
+        double mean = mean();
+        double sum = 0;
+        for (double threshold: thresholds) {
+            sum += (threshold - mean) * (threshold - mean);
+        }
+
+        return Math.sqrt(sum / (thresholds.length - 1));
+    }
+
+    protected double[] collectPercolationThresholds() {
+        if (percolationThresholds != null) {
+            return percolationThresholds;
+        }
+
+        percolationThresholds = new double[runs];
+        final int sites = gridWidth * gridWidth;
+
+        for (int i = 0; i < runs; i++) {
+            Percolation p = new Percolation(gridWidth);
+            int open = 0;
+            while (!p.percolates()) {
+                openRandomSite(p);
+                open++;
+            }
+            percolationThresholds[i] = (double)open / sites;
+        }
+
+        return percolationThresholds;
+    }
+
+    private void openRandomSite(Percolation p) {
+        while (true) {
+            int row = 1 + rand.nextInt(gridWidth);
+            int col = 1 + rand.nextInt(gridWidth);
+            if (!p.isOpen(row, col)) {
+                p.open(row, col);
+                break;
+            }
+        }
     }
 
     public static void main(String[] args) {
