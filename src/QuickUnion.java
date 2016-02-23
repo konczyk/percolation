@@ -4,36 +4,28 @@ class QuickUnion {
 
     private int[] nodes;
     private int[] sizes;
-    private int count;
+    private int components;
 
     public QuickUnion(int n) {
+        if (n <= 0) {
+            throw new IllegalArgumentException("n must be larger than 0");
+        }
+
         nodes = new int[n];
         sizes = new int[n];
-        count = n;
-        for (int i = 0; i < n; i++) {
+        components = n;
+        for (int i = 0; i < n; ++i) {
             nodes[i] = i;
             sizes[i] = 1;
         }
     }
 
     public int count() {
-        return count;
+        return components;
     }
 
-    // return the root node of the component containing node p
-    public int find(int p) {
-        validate(p);
-        while (p != nodes[p]) {
-            p = nodes[p];
-        }
-
-        return p;
-    }
-
-    private void validate(int p) {
-        if (p < 0 || p >= nodes.length) {
-            throw new IndexOutOfBoundsException("Invalid node: " + p);
-        }
+    public boolean connected(int p, int q) {
+        return find(p) == find(q);
     }
 
     // merge components containing nodes p and q
@@ -54,11 +46,23 @@ class QuickUnion {
             sizes[proot] += sizes[qroot];
         }
 
-        count--;
+        components--;
     }
 
-    public boolean connected(int p, int q) {
-        return find(p) == find(q);
+    // return the root node of the component containing node p
+    public int find(int p) {
+        validate(p);
+        while (p != nodes[p]) {
+            p = nodes[p];
+        }
+
+        return p;
+    }
+
+    private void validate(int p) {
+        if (p < 0 || p >= nodes.length) {
+            throw new IndexOutOfBoundsException("Invalid node: " + p);
+        }
     }
 
     public static void main(String[] args) {
