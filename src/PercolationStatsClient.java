@@ -6,14 +6,14 @@ public class PercolationStatsClient {
         names={"--grid-width", "-gw"},
         description = "Grid width",
         required = true,
-        validateWith = PositiveInteger.class)
+        validateWith = PositiveIntegerValidator.class)
     private int gridWidth;
 
     @Parameter(
         names = {"--trials", "-t"},
         description = "Number of trials",
         required = true,
-        validateWith = PositiveInteger.class)
+        validateWith = PositiveIntegerValidator.class)
     private int trials;
 
     @Parameter(
@@ -22,33 +22,16 @@ public class PercolationStatsClient {
         help = true)
     private boolean help = false;
 
-    public static class PositiveInteger implements IParameterValidator {
-        @Override
-        public void validate(String name, String value)
-            throws ParameterException {
-
-            String msg = "Parameter " + name + " should be a positive integer"
-                         + " (found " + value + ")";
-            try {
-                int n = Integer.parseInt(value);
-                if (n < 0)
-                    throw new ParameterException(msg);
-            } catch (Exception e) {
-                throw new ParameterException(msg);
-            }
-        }
-    }
-
-    public static void main(String[] args){
-        PercolationStatsClient launcher = new PercolationStatsClient();
-        JCommander jc = new JCommander(launcher);
+    public static void main(String[] args) {
+        PercolationStatsClient client = new PercolationStatsClient();
+        JCommander jc = new JCommander(client);
         try {
             jc.parse(args);
-            if (launcher.help) {
+            if (client.help) {
                 jc.usage();
                 return;
             }
-            launcher.run();
+            client.run();
         } catch (ParameterException e) {
             System.out.println(e.getMessage());
         }
