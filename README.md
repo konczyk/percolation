@@ -20,9 +20,9 @@ Visualize a 20x20 grid with custom fraction of open sites ([see animation](visua
 
     $ ./gen_grid.py 20 --frac 0.5 | java -cp build/libs/percolation.jar PercolationVisualizer
 
-Estimate percolation threshold for 20x20 grid and series of 10000 computations:
+Estimate percolation threshold for 20x20 grid and series of 10000 trials:
 
-    $ java -cp build/libs/percolation.jar PercolationStats 20 10000
+    $ java -cp build/libs/percolation.jar PercolationStatsClient -gw 20 -t 10000
 
     mean                    = 0.5915002500000021
     stddev                  = 0.04857501495774638

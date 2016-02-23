@@ -2,30 +2,30 @@ import java.util.Random;
 
 public class PercolationStats {
 
-    private final int runs;
     private final int gridWidth;
+    private final int trials;
 
     private Random rand = new Random();
 
     private double[] percolationThresholds;
 
-    public PercolationStats(int gridWidth, int runs) {
-        if (gridWidth <= 0 || runs <= 0) {
+    public PercolationStats(int gridWidth, int trials) {
+        if (gridWidth <= 0 || trials <= 0) {
             throw new IllegalArgumentException(
-                "grid width and runs must be greater than 0");
+                "grid width and trials must be greater than 0");
         }
         this.gridWidth = gridWidth;
-        this.runs = runs;
+        this.trials = trials;
     }
 
     // low  endpoint of 95% confidence interval
     public double confidenceLo() {
-        return mean() - (1.96 * stddev()) / Math.sqrt(runs);
+        return mean() - (1.96 * stddev()) / Math.sqrt(trials);
     }
 
     // high endpoint of 95% confidence interval
     public double confidenceHi() {
-        return mean() + (1.96 * stddev()) / Math.sqrt(runs);
+        return mean() + (1.96 * stddev()) / Math.sqrt(trials);
     }
 
     // sample mean of percolation threshold
@@ -58,10 +58,10 @@ public class PercolationStats {
             return percolationThresholds;
         }
 
-        percolationThresholds = new double[runs];
+        percolationThresholds = new double[trials];
         final int sites = gridWidth * gridWidth;
 
-        for (int i = 0; i < runs; i++) {
+        for (int i = 0; i < trials; i++) {
             Percolation p = new Percolation(gridWidth);
             int open = 0;
             while (!p.percolates()) {
@@ -83,17 +83,6 @@ public class PercolationStats {
                 break;
             }
         }
-    }
-
-    public static void main(String[] args) {
-        int grid = Integer.parseInt(args[0]);
-        int runs = Integer.parseInt(args[1]);
-        PercolationStats stats = new PercolationStats(grid, runs);
-
-        System.out.println("mean\t\t\t= " + stats.mean());
-        System.out.println("stddev\t\t\t= " + stats.stddev());
-        System.out.println("95% confidence interval = " + stats.confidenceLo()
-                            + ", " + stats.confidenceHi());
     }
 
 }
