@@ -4,13 +4,13 @@ Estimate the value of the percolation threshold via Monte Carlo simulation.
 
 ## Examples 
 
-Build a jar file:
+Build project:
 
     $ ./gradlew assemble
 
 Quick Union with 100000 nodes and 200000 random connections:
 
-    $ ./gen_nodes.py 100000 200000 | java -cp build/libs/percolation.jar QuickUnion
+    $ java -cp build/libs/percolation.jar QuickUnionClient -n 100000 -c 200000
 
 Visualize a 20x20 grid with default fraction of open sites ([see animation](visualizer1.gif?raw=true)):
 

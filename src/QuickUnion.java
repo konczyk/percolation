@@ -1,5 +1,3 @@
-import java.util.Scanner;
-
 class QuickUnion {
 
     private int[] nodes;
@@ -63,27 +61,6 @@ class QuickUnion {
         if (p < 0 || p >= nodes.length) {
             throw new IndexOutOfBoundsException("Invalid node: " + p);
         }
-    }
-
-    public static void main(String[] args) {
-        int nodes = 0;
-        int components = 0;
-        try (Scanner sc = new Scanner(System.in)) {
-            nodes = sc.nextInt();
-
-            QuickUnion qu = new QuickUnion(nodes);
-            while (sc.hasNext()) {
-                int p = sc.nextInt();
-                int q = sc.nextInt();
-                if (!qu.connected(p, q)) {
-                    qu.union(p, q);
-                    System.out.println(p + " " + q);
-                }
-            }
-            components = qu.count();
-        }
-        System.out.println("Nodes: " + nodes);
-        System.out.println("Components: " + components);
     }
 
 }
