@@ -11,7 +11,7 @@ public class PercolationTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void throwsExceptionIfSitesNumberIsNonPositive() {
-        Percolation p = new Percolation(0);
+        new Percolation(0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -25,7 +25,7 @@ public class PercolationTest {
     }
 
     @Test
-    public void marksTopSiteAsFull() {
+    public void topSiteIsFull() {
         Percolation perc = new Percolation(3);
 
         perc.open(1, 1);
@@ -34,7 +34,7 @@ public class PercolationTest {
     }
 
     @Test
-    public void marksSiteConnectedToTopAsFull() {
+    public void topConnectedSiteIsFull() {
         Percolation perc = new Percolation(3);
 
         perc.open(1, 1);
@@ -44,7 +44,7 @@ public class PercolationTest {
     }
 
     @Test
-    public void doesNotMarkBottomSitesAsFull() {
+    public void disconnectedSiteIsNotFull() {
         Percolation perc = new Percolation(3);
 
         // make the system percolate
@@ -58,7 +58,7 @@ public class PercolationTest {
     }
 
     @Test
-    public void percolatesWhenTopAndBottomSitesConnected() {
+    public void percolates() {
         Percolation perc = new Percolation(3);
 
         perc.open(1, 1);

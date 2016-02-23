@@ -3,39 +3,39 @@
  */
 public class Percolation {
 
-    // site status, default is blocked
-    private static final int BLOCKED = 0;
-    private static final int OPEN = 1;
-    // indicate if a site is open and connected to bottom row
-    private static final int CONN_BOTTOM = 2;
+    private static final int SITE_BLOCKED = 0;
+    private static final int SITE_OPEN = 1;
+    private static final int SITE_BOTTOM_CONNECTED = 2;
 
-    // indices of virtual sites
+    // virtual sites
     private final int VIRT_TOP = 0;
     private final int VIRT_BOTTOM;
 
-    // connectivity data structure
     private final QuickUnion qu;
-    // number of all sites in the grid
     private final int[] grid;
-    // grid width (same as height)
     private final int gridWidth;
-    // total number of grid sites
     private final int gridSize;
 
+    // create n x n grid, with all sites blocked
     public Percolation(int n) {
         if (n <= 0) {
             throw new IllegalArgumentException("n must be larger than 0");
         }
 
-        gridWidth = n;
         // grid includes two additional virtual sites
         // at indices 0 and n * n + 1
+        gridWidth = n;
         gridSize = gridWidth * gridWidth + 2;
         grid = new int[gridSize];
-        VIRT_BOTTOM = gridSize - 1;
 
-        // initialize QuickUnion data structure
+        VIRT_BOTTOM = gridSize - 1;
+        grid[VIRT_TOP] = grid[VIRT_BOTTOM] = SITE_OPEN;
+
         qu = new QuickUnion(gridSize);
+    }
+
+    public boolean percolates() {
+        return qu.connected(VIRT_TOP, VIRT_BOTTOM);
     }
 
     public int getGridWidth() {
@@ -47,98 +47,87 @@ public class Percolation {
             return;
         }
 
-        // open the site
-        int site = translateCoords(row, col);
-        grid[site] = OPEN;
-        // special flags for bottom sites
+        int site = coordsToIndex(row, col);
+        grid[site] = SITE_OPEN;
+        // bottom row
         if (row == gridWidth) {
-            grid[site] |= CONN_BOTTOM;
+            grid[site] |= SITE_BOTTOM_CONNECTED;
         }
 
-        // connect neighbors
-        connectNeighbors(row, col);
+        connectWithNeighbors(row, col);
     }
 
-    private void connectNeighbors(int row, int col) {
-        final int site = translateCoords(row, col);
+    private void connectWithNeighbors(int row, int col) {
+        connectWithTopNeighbor(row, col);
+        connectWithRightNeighbor(row, col);
+        connectWithBottomNeighbor(row, col);
+        connectWithLeftNeighbor(row, col);
 
-        // connect to the top neighbor, skip virtual site
-        if (row == 1 || isOpen(row - 1, col)) {
-            connect(site, row == 1 ? VIRT_TOP : translateCoords(row - 1, col));
+        // connect with virtual bottom site after connecting neighbors
+        final int siteRoot = qu.find(coordsToIndex(row, col));
+        if (qu.connected(siteRoot, VIRT_TOP) &&
+            (grid[siteRoot] & SITE_BOTTOM_CONNECTED) == SITE_BOTTOM_CONNECTED) {
+            qu.union(siteRoot, VIRT_BOTTOM);
         }
+    }
 
-        // connect to the bottom neighbor, skip virtual site
-        if (row < gridWidth && isOpen(row + 1, col)) {
-            connect(site, translateCoords(row + 1, col));
+    private void connectWithTopNeighbor(int row, int col) {
+        final int site = coordsToIndex(row, col);
+
+        if (row == 1) {
+            connect(site, VIRT_TOP);
+        } else if (isOpen(row - 1, col)) {
+            connect(site, coordsToIndex(row - 1, col));
         }
+    }
 
-        // connect to the right neighbor
+    private void connectWithRightNeighbor(int row, int col) {
         if (col < gridWidth && isOpen(row, col + 1)) {
-            connect(site, translateCoords(row, col + 1));
+            connect(coordsToIndex(row, col), coordsToIndex(row, col + 1));
         }
+    }
 
-        // connect to the left neighbor
+    private void connectWithBottomNeighbor(int row, int col) {
+        if (row < gridWidth && isOpen(row + 1, col)) {
+            connect(coordsToIndex(row, col), coordsToIndex(row + 1, col));
+        }
+    }
+
+    private void connectWithLeftNeighbor(int row, int col) {
         if (col > 1 && isOpen(row, col - 1)) {
-            connect(site, translateCoords(row, col - 1));
+            connect(coordsToIndex(row, col), coordsToIndex(row, col - 1));
         }
-
-        // union with virtual bottom if top is connected
-        final int root = qu.find(site);
-        if (qu.connected(root, VIRT_TOP) &&
-            (grid[root] & CONN_BOTTOM) == CONN_BOTTOM)
-        {
-            qu.union(root, VIRT_BOTTOM);
-        }
-
     }
 
     private void connect(int site, int neighbor) {
-        final int siteRootStatus = grid[qu.find(site)];
+        final int siteRoot = qu.find(site);
+        final int siteRootStatus = grid[siteRoot];
         final int neighborRootStatus = grid[qu.find(neighbor)];
-        qu.union(site, neighbor);
-        // update site's root status after union
+
+        qu.union(siteRoot, neighbor);
         grid[qu.find(site)] = siteRootStatus | neighborRootStatus;
     }
 
-    public boolean isOpen(int row, int col) {
-        return grid[translateCoords(row, col)] != BLOCKED;
-    }
-
-    // check if the given site is connected with the virtual top site
     public boolean isFull(int row, int col) {
-        final int site = translateCoords(row, col);
+        final int site = coordsToIndex(row, col);
 
         return isOpen(row, col) && qu.connected(site, VIRT_TOP);
     }
 
-    // check percolation by examining connectivity of the virtual sites
-    public boolean percolates() {
-        return qu.connected(VIRT_TOP, VIRT_BOTTOM);
+    public boolean isOpen(int row, int col) {
+        return grid[coordsToIndex(row, col)] != SITE_BLOCKED;
     }
 
-    // translate coordinates to grid array indices
-    // first index is 1
-    private int translateCoords(int row, int col) {
+    private int coordsToIndex(int row, int col) {
         if (row < 1 || row > gridWidth) {
             throw new IllegalArgumentException("row must be between 1 and n");
         }
+
         if (col < 1 || col > gridWidth) {
             throw new IllegalArgumentException("col must be between 1 and n");
         }
 
         return (row - 1) * gridWidth + col;
-    }
-
-    public static void main(String[] args) {
-        // test coordinates
-        Percolation p = new Percolation(10);
-        System.out.println("Grid width: 10");
-        System.out.println("(1, 1) => 1 ? " +
-                            (p.translateCoords(1, 1) == 1));
-        System.out.println("(4, 4) => 34 ? " +
-                            (p.translateCoords(4, 4) == 34));
-        System.out.println("(10, 10) => 100 ? " +
-                            (p.translateCoords(10, 10) == 100));
     }
 
 }
