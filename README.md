@@ -12,6 +12,10 @@ Quick Union with 100000 nodes and 200000 random connections:
 
     $ java -cp build/libs/percolation.jar QuickUnionClient -n 100000 -c 200000
 
+Quick Union with data read from standard input:
+
+    $ java -cp build/libs/percolation.jar QuickUnionClient - < data/quickunion.txt
+
 Visualize a 20x20 grid with default fraction of open sites ([see animation](visualizer1.gif?raw=true)):
 
     $ ./gen_grid.py 20 | java -cp build/libs/percolation.jar PercolationVisualizer
