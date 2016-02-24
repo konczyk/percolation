@@ -14,15 +14,19 @@ Quick Union with 100000 nodes and 200000 random connections:
 
 Quick Union with data read from standard input:
 
-    $ java -cp build/libs/percolation.jar QuickUnionClient - < data/quickunion.txt
+    $ cat data/quickunion.txt | java -cp build/libs/percolation.jar QuickUnionClient -
+    
+Visualize a 20x20 grid with default fraction of randomly open sites ([see sample animation](data/visualizer1.gif?raw=true)):
 
-Visualize a 20x20 grid with default fraction of open sites ([see animation](visualizer1.gif?raw=true)):
+    $ java -cp build/libs/percolation.jar PercolationVisualizer -gw 20
 
-    $ ./gen_grid.py 20 | java -cp build/libs/percolation.jar PercolationVisualizer
+Visualize a 20x20 grid with custom fraction of randomly open sites ([see sample animation](data/visualizer2.gif?raw=true)):
 
-Visualize a 20x20 grid with custom fraction of open sites ([see animation](visualizer2.gif?raw=true)):
+    $ java -cp build/libs/percolation.jar PercolationVisualizer -gw 20 -f 0.5
 
-    $ ./gen_grid.py 20 --frac 0.5 | java -cp build/libs/percolation.jar PercolationVisualizer
+Visualize a 20x20 grid with data read from standard input:
+
+    $ cat data/percolation.txt | java -cp build/libs/percolation.jar PercolationVisualizer -
 
 Estimate percolation threshold for 20x20 grid and series of 10000 trials:
 
