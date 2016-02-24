@@ -38,10 +38,6 @@ public class Percolation {
         return qu.connected(VIRT_TOP, VIRT_BOTTOM);
     }
 
-    public int getGridWidth() {
-        return gridWidth;
-    }
-
     public void open(int row, int col) {
         if (isOpen(row, col)) {
             return;
