@@ -82,8 +82,8 @@ public class PercolationVisualizer {
     }
 
     public void run() {
-        Percolation p = new Percolation(gridWidth);
-        ListIterator<Site> it = sitesToOpen.listIterator();
+        final Percolation p = new Percolation(gridWidth);
+        final ListIterator<Site> it = sitesToOpen.listIterator();
 
         Timer timer = new Timer(DELAY, new ActionListener() {
             @Override
@@ -179,7 +179,8 @@ public class PercolationVisualizer {
     }
 
     public static void main(String[] args) {
-        PercolationVisualizerArgs visualizerArgs = new PercolationVisualizerArgs();
+        final PercolationVisualizerArgs visualizerArgs
+              = new PercolationVisualizerArgs();
         JCommander jc = new JCommander(visualizerArgs);
         try {
             jc.parse(args);
