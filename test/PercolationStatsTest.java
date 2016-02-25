@@ -17,13 +17,14 @@ public class PercolationStatsTest {
         "1, 0",
         "0, 1"})
     public void throwsExceptionIfSitesOrRunsNumberIsNonPositive(int n, int t) {
-        PercolationStats ps = new PercolationStats(n, t);
+        new PercolationStats(n, t);
     }
 
     @Test
     @Parameters(method="argsProvider")
     public void percolationThresholdsWithinBounds(int gw, int r, double delta) {
         PercolationStats ps = new PercolationStats(gw, r);
+
         double[] res = ps.collectPercolationThresholds();
         double sum = 0, avg;
         for (double s: res) {
@@ -49,6 +50,7 @@ public class PercolationStatsTest {
     @Test
     public void mean() {
         PercolationStats statsMock = spy(new PercolationStats(1, 2));
+
         when(statsMock.collectPercolationThresholds())
             .thenReturn(new double[]{2, 3, 5});
 
@@ -58,6 +60,7 @@ public class PercolationStatsTest {
     @Test
     public void stddev() {
         PercolationStats statsMock = spy(new PercolationStats(1, 2));
+
         when(statsMock.collectPercolationThresholds())
             .thenReturn(new double[]{2, 3, 5});
         when(statsMock.mean()).thenReturn(3.3);
@@ -68,6 +71,7 @@ public class PercolationStatsTest {
     @Test
     public void confidenceInterval() {
         PercolationStats statsMock = spy(new PercolationStats(1, 2));
+
         when(statsMock.mean()).thenReturn(4.5);
         when(statsMock.stddev()).thenReturn(1.2);
 

@@ -33,6 +33,7 @@ public class QuickUnionTest {
     @Test
     public void union() {
         QuickUnion qu = new QuickUnion(3);
+
         qu.union(1, 2);
 
         assertThat(qu.count(), is(2));
@@ -42,6 +43,7 @@ public class QuickUnionTest {
     @Test
     public void rootsAfterUnionSameSizedComponents() {
         QuickUnion qu = new QuickUnion(3);
+
         qu.union(1, 2);
 
         assertThat(qu.find(1), is(1));
@@ -51,6 +53,7 @@ public class QuickUnionTest {
     @Test
     public void rootsAfterUnionWithOneComponentBigger() {
         QuickUnion qu = new QuickUnion(3);
+
         qu.union(1, 2);
         qu.union(2, 0);
 
