@@ -1,4 +1,4 @@
-/*
+/**
  * Percolation data type as n x n grid
  */
 public class Percolation {
