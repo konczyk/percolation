@@ -2,6 +2,21 @@
 
 Estimate the value of the percolation threshold via Monte Carlo simulation. 
 
+## Model
+- Percolation system represented by a grid of sites, with each site either open
+or blocked (default)
+- A full site is an open site that can be connected to an open site in the top
+row
+- System percolates when there is a full site in the bottom row of the grid
+
+## Implementation constraints
+- Fixed public API for `QuickUnion`, `Percolation` and `PercolationStats`
+- `Percolation` constructor should take time proportional to n<sup>2</sup> and all
+its other methods should take constant time plus constant number of calls to
+`QuickUnion`
+- `QuickUnion`, `Percolation` and `PercolationStats` should not call library
+functions except those in `java.lang` and `java.util.Random`
+
 ## Examples 
 
 Build project:
