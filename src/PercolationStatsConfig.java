@@ -24,19 +24,35 @@ public class PercolationStatsConfig {
         help = true)
     private boolean help = false;
 
-    public static void main(String[] args) {
-        PercolationStatsConfig client = new PercolationStatsConfig();
-        JCommander jc = new JCommander(client);
+    public int getGridWidth() {
+        return gridWidth;
+    }
+
+    public int getTrials() {
+        return trials;
+    }
+
+    public static PercolationStatsConfig parseConfig(String[] args) {
+        PercolationStatsConfig config = new PercolationStatsConfig();
+        JCommander jc = new JCommander(config);
+        jc.setProgramName("PercolationStats");
+        if (args.length == 0) {
+            jc.usage();
+            System.exit(0);
+        }
+
         try {
             jc.parse(args);
-            if (client.help) {
+            if (config.help) {
                 jc.usage();
-                return;
+                System.exit(0);
             }
-            client.run();
         } catch (ParameterException e) {
             System.out.println(e.getMessage());
+            System.exit(1);
         }
+
+        return config;
     }
 
     public void run() {

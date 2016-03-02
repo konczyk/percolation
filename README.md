@@ -45,7 +45,7 @@ Visualize a 20x20 grid with data read from standard input:
 
 Estimate percolation threshold for 20x20 grid and series of 10000 trials:
 
-    $ java -cp build/libs/percolation.jar PercolationStatsClient -gw 20 -t 10000
+    $ java -cp build/libs/percolation.jar PercolationStats -gw 20 -t 10000
 
     mean                    = 0.5915002500000021
     stddev                  = 0.04857501495774638

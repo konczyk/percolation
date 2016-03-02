@@ -89,4 +89,15 @@ public class PercolationStats {
         }
     }
 
+    public static void main(String[] args) {
+        PercolationStatsConfig conf = PercolationStatsConfig.parseConfig(args);
+        PercolationStats stats = new PercolationStats(
+            conf.getGridWidth(), conf.getTrials());
+
+        System.out.println("mean\t\t\t= " + stats.mean());
+        System.out.println("stddev\t\t\t= " + stats.stddev());
+        System.out.println("95% confidence interval = " + stats.confidenceLo()
+            + ", " + stats.confidenceHi());
+    }
+
 }
