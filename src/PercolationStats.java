@@ -5,7 +5,7 @@ public class PercolationStats {
     private final int gridWidth;
     private final int trials;
 
-    private Random rand = new Random();
+    private final Random rand = new Random();
 
     private double[] percolationThresholds;
 
@@ -72,7 +72,7 @@ public class PercolationStats {
                 openRandomSite(p);
                 open++;
             }
-            percolationThresholds[i] = (double)open / sites;
+            percolationThresholds[i] = (double) open / sites;
         }
 
         return percolationThresholds;

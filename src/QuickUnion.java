@@ -1,4 +1,4 @@
-class QuickUnion {
+public class QuickUnion {
 
     private int[] nodes;
     private int[] sizes;
@@ -29,19 +29,19 @@ class QuickUnion {
     // merge components containing nodes p and q
     // smaller component gets merged into larger
     public void union(int p, int q) {
-        int proot = find(p);
-        int qroot = find(q);
+        int pRoot = find(p);
+        int qRoot = find(q);
 
-        if (proot == qroot) {
+        if (pRoot == qRoot) {
             return;
         }
 
-        if (sizes[proot] < sizes[qroot]) {
-            nodes[proot] = qroot;
-            sizes[qroot] += sizes[proot];
+        if (sizes[pRoot] < sizes[qRoot]) {
+            nodes[pRoot] = qRoot;
+            sizes[qRoot] += sizes[pRoot];
         } else {
-            nodes[qroot] = proot;
-            sizes[proot] += sizes[qroot];
+            nodes[qRoot] = pRoot;
+            sizes[pRoot] += sizes[qRoot];
         }
 
         components--;

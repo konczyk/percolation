@@ -1,14 +1,27 @@
-import com.beust.jcommander.*;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Scanner;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.List;
-import java.util.*;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import javax.swing.border.*;
+import javax.swing.border.EmptyBorder;
 
 public class PercolationVisualizer {
 
@@ -21,8 +34,8 @@ public class PercolationVisualizer {
 
     private final List<JLabel> gridSites = new ArrayList<>();
     private int openSites = 0;
-    private int allSites;
-    private int gridWidth;
+    private final int allSites;
+    private final int gridWidth;
     private boolean percolates = false;
     private List<Site> sitesToOpen = new ArrayList<>();
 
@@ -32,7 +45,7 @@ public class PercolationVisualizer {
     private final JLabel thresholdLabel;
     private final JLabel percolationLabel;
 
-    public PercolationVisualizer(int gridWidth) {
+    private PercolationVisualizer(int gridWidth) {
         this.gridWidth = gridWidth;
         allSites = gridWidth * gridWidth;
 
@@ -57,10 +70,10 @@ public class PercolationVisualizer {
 
     // data structure representing site on the grid
     private class Site {
-        public int row;
-        public int col;
+        private final int row;
+        private final int col;
 
-        public Site(int row, int col) {
+        private Site(int row, int col) {
             this.row = row;
             this.col = col;
         }
@@ -81,7 +94,7 @@ public class PercolationVisualizer {
         updateStatusPanel();
     }
 
-    public void run() {
+    private void run() {
         final Percolation p = new Percolation(gridWidth);
         final ListIterator<Site> it = sitesToOpen.listIterator();
 
@@ -89,7 +102,7 @@ public class PercolationVisualizer {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!it.hasNext()) {
-                    ((Timer)e.getSource()).stop();
+                    ((Timer) e.getSource()).stop();
                 } else {
                     Site site = it.next();
                     p.open(site.row, site.col);
@@ -109,7 +122,7 @@ public class PercolationVisualizer {
     private void updateGrid(Percolation p) {
         int open = 0;
         for (int row = 1; row <= gridWidth; row++) {
-            for (int col = 1; col <= gridWidth; col ++) {
+            for (int col = 1; col <= gridWidth; col++) {
                 int siteLabelIndex = (row-1) * gridWidth + (col-1);
                 if (p.isFull(row, col)) {
                     gridSites.get(siteLabelIndex).setBackground(Color.CYAN);
@@ -138,13 +151,11 @@ public class PercolationVisualizer {
             pv = new PercolationVisualizer(args.gridWidth);
             pv.loadSitesFromRandom(args.fraction);
         } else {
-            int width = 0;
             try (Scanner scanner = new Scanner(System.in)) {
-                width = scanner.nextInt();
+                int width = scanner.nextInt();
                 pv = new PercolationVisualizer(width);
                 pv.loadSitesFromStdIn(scanner);
             }
-
         }
 
         JFrame frame = new JFrame(TITLE);

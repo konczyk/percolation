@@ -1,9 +1,11 @@
-import com.beust.jcommander.*;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
 
 public class PercolationStatsClient {
 
     @Parameter(
-        names={"--grid-width", "-gw"},
+        names = {"--grid-width", "-gw"},
         description = "Grid width",
         required = true,
         validateWith = PositiveIntegerValidator.class)
