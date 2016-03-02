@@ -118,11 +118,11 @@ public class Percolation {
 
     private int coordsToIndex(int row, int col) {
         if (row < 1 || row > gridWidth) {
-            throw new IllegalArgumentException("row must be between 1 and n");
+            throw new IndexOutOfBoundsException("row must be between 1 and n");
         }
 
         if (col < 1 || col > gridWidth) {
-            throw new IllegalArgumentException("col must be between 1 and n");
+            throw new IndexOutOfBoundsException("col must be between 1 and n");
         }
 
         return (row - 1) * gridWidth + col;

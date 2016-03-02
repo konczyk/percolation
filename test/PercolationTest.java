@@ -15,7 +15,7 @@ public class PercolationTest {
         new Percolation(0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IndexOutOfBoundsException.class)
     @Parameters({
         "0, 0",
         "1, 0",
