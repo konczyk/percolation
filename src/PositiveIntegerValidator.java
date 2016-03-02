@@ -11,7 +11,7 @@ public class PositiveIntegerValidator implements IParameterValidator {
 
         try {
             int n = Integer.parseInt(value);
-            if (n < 0) {
+            if (n <= 0) {
                 throw new ParameterException(msg);
             }
         } catch (Exception e) {
