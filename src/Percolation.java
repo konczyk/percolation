@@ -3,16 +3,16 @@
  */
 public class Percolation {
 
-    private static final int SITE_BLOCKED = 0;
-    private static final int SITE_OPEN = 1;
-    private static final int SITE_BOTTOM_CONNECTED = 2;
+    private static final byte SITE_BLOCKED = 0;
+    private static final byte SITE_OPEN = 1;
+    private static final byte SITE_BOTTOM_CONNECTED = 2;
 
     // virtual sites
     private final int virtualTop;
     private final int virtualBottom;
 
     private final QuickUnion quickUnion;
-    private final int[] grid;
+    private final byte[] statusGrid;
     private final int gridWidth;
 
     // create n x n grid, with all sites blocked
@@ -28,9 +28,9 @@ public class Percolation {
         virtualTop = 0;
         virtualBottom = gridSize - 1;
 
-        grid = new int[gridSize];
-        grid[virtualTop] = SITE_OPEN;
-        grid[virtualBottom] = SITE_OPEN;
+        statusGrid = new byte[gridSize];
+        statusGrid[virtualTop] = SITE_OPEN;
+        statusGrid[virtualBottom] = SITE_OPEN;
         quickUnion = new QuickUnion(gridSize);
     }
 
@@ -44,10 +44,10 @@ public class Percolation {
         }
 
         int site = coordsToIndex(row, col);
-        grid[site] = SITE_OPEN;
+        statusGrid[site] = SITE_OPEN;
         // bottom row
         if (row == gridWidth) {
-            grid[site] |= SITE_BOTTOM_CONNECTED;
+            statusGrid[site] |= SITE_BOTTOM_CONNECTED;
         }
 
         connectWithNeighbors(row, col);
@@ -61,7 +61,7 @@ public class Percolation {
 
         // connect with virtual bottom site after connecting neighbors
         int siteRoot = quickUnion.find(coordsToIndex(row, col));
-        int bottomConnected = grid[siteRoot] & SITE_BOTTOM_CONNECTED;
+        int bottomConnected = statusGrid[siteRoot] & SITE_BOTTOM_CONNECTED;
         if (quickUnion.connected(siteRoot, virtualTop) &&
                 bottomConnected == SITE_BOTTOM_CONNECTED) {
             quickUnion.union(siteRoot, virtualBottom);
@@ -97,12 +97,13 @@ public class Percolation {
     }
 
     private void connect(int site, int neighbor) {
-        final int siteRoot = quickUnion.find(site);
-        final int siteRootStatus = grid[siteRoot];
-        final int neighborRootStatus = grid[quickUnion.find(neighbor)];
+        int siteRoot = quickUnion.find(site);
+        byte siteRootStatus = statusGrid[siteRoot];
+        byte neighborRootStatus = statusGrid[quickUnion.find(neighbor)];
 
         quickUnion.union(siteRoot, neighbor);
-        grid[quickUnion.find(site)] = siteRootStatus | neighborRootStatus;
+        statusGrid[quickUnion.find(site)] =
+            (byte) (siteRootStatus | neighborRootStatus);
     }
 
     public boolean isFull(int row, int col) {
@@ -112,7 +113,7 @@ public class Percolation {
     }
 
     public boolean isOpen(int row, int col) {
-        return grid[coordsToIndex(row, col)] != SITE_BLOCKED;
+        return statusGrid[coordsToIndex(row, col)] != SITE_BLOCKED;
     }
 
     private int coordsToIndex(int row, int col) {
