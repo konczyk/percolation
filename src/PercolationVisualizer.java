@@ -1,6 +1,3 @@
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -69,7 +66,7 @@ public class PercolationVisualizer {
     }
 
     // data structure representing site on the grid
-    private class Site {
+    private static class Site {
         private final int row;
         private final int col;
 
@@ -145,16 +142,16 @@ public class PercolationVisualizer {
             percolates ? "percolates" : "does not percolate");
     }
 
-    private static void showGUI(PercolationVisualizerArgs args) {
+    private static void showGUI(PercolationVisualizerConfig config) {
         PercolationVisualizer pv;
-        if (!args.stdin) {
-            pv = new PercolationVisualizer(args.gridWidth);
-            pv.loadSitesFromRandom(args.fraction);
+        if (!config.isStdin()) {
+            pv = new PercolationVisualizer(config.getGridWidth());
+            pv.loadSitesFromRandom(config.getFraction());
         } else {
             try (Scanner scanner = new Scanner(System.in)) {
                 int width = scanner.nextInt();
                 pv = new PercolationVisualizer(width);
-                pv.loadSitesFromStdIn(scanner);
+                pv.loadSitesFromStdin(scanner);
             }
         }
 
@@ -172,7 +169,7 @@ public class PercolationVisualizer {
         pv.run();
     }
 
-    private void loadSitesFromStdIn(Scanner scanner) {
+    private void loadSitesFromStdin(Scanner scanner) {
         while (scanner.hasNext()) {
             sitesToOpen.add(new Site(scanner.nextInt(), scanner.nextInt()));
         }
@@ -190,24 +187,12 @@ public class PercolationVisualizer {
     }
 
     public static void main(String[] args) {
-        final PercolationVisualizerArgs visualizerArgs
-              = new PercolationVisualizerArgs();
-        JCommander jc = new JCommander(visualizerArgs);
-        try {
-            jc.parse(args);
-            visualizerArgs.validate();
-            if (visualizerArgs.help || args.length == 0) {
-                jc.usage();
-                return;
-            }
-        } catch (ParameterException e) {
-            System.out.println(e.getMessage());
-            return;
-        }
+        final PercolationVisualizerConfig config =
+                PercolationVisualizerConfig.parseConfig(args);
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                showGUI(visualizerArgs);
+                showGUI(config);
             }
         });
     }
