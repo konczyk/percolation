@@ -1,4 +1,5 @@
-import com.beust.jcommander.*;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
 
 public class PercolationVisualizerArgs {
 

@@ -1,14 +1,14 @@
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.closeTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
+
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 @RunWith(JUnitParamsRunner.class)
 public class PercolationStatsTest {

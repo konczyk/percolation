@@ -1,12 +1,13 @@
-import com.beust.jcommander.*;
+import com.beust.jcommander.IParameterValidator;
+import com.beust.jcommander.ParameterException;
 
 public class FractionValidator implements IParameterValidator {
 
     @Override
     public void validate(String name, String value) throws ParameterException {
 
-        String msg = "Parameter " + name + " should be a fraction between 0 and 1"
-            + " (found " + value + ")";
+        String msg = "\"" + name + "\": should be a fraction between 0 and 1," +
+                     "  \"" + value + "\" given";
 
         try {
             double d = Double.parseDouble(value);

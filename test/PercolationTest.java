@@ -1,11 +1,11 @@
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
 @RunWith(JUnitParamsRunner.class)
 public class PercolationTest {

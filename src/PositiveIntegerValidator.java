@@ -1,12 +1,13 @@
-import com.beust.jcommander.*;
+import com.beust.jcommander.IParameterValidator;
+import com.beust.jcommander.ParameterException;
 
 public class PositiveIntegerValidator implements IParameterValidator {
 
     @Override
     public void validate(String name, String value) throws ParameterException {
 
-        String msg = "Parameter " + name + " should be a positive integer"
-            + " (found " + value + ")";
+        String msg = "\"" + name + "\": should be a positive integer, " +
+             "\"" + value + "\" given";
 
         try {
             int n = Integer.parseInt(value);
