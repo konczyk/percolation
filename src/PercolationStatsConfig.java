@@ -2,7 +2,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 
-public class PercolationStatsClient {
+public class PercolationStatsConfig {
 
     @Parameter(
         names = {"--grid-width", "-gw"},
@@ -25,7 +25,7 @@ public class PercolationStatsClient {
     private boolean help = false;
 
     public static void main(String[] args) {
-        PercolationStatsClient client = new PercolationStatsClient();
+        PercolationStatsConfig client = new PercolationStatsConfig();
         JCommander jc = new JCommander(client);
         try {
             jc.parse(args);
