@@ -4,22 +4,33 @@ import static org.junit.Assert.assertThat;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 @RunWith(JUnitParamsRunner.class)
 public class QuickUnionTest {
 
-    @Test(expected = IllegalArgumentException.class)
-    public void throwsExceptionIfNodesNumberIsNonPositive() {
-        new QuickUnion(0);
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    @Test
+    @Parameters({"-1", "0"})
+    public void constructorWithInvalidNodesNumberThrowsException(int n) {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("n must be larger than 0");
+
+        new QuickUnion(n);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     @Parameters({"-1", "3"})
-    public void throwsExceptionOnInvalidNode(int node) {
-        QuickUnion qu = new QuickUnion(3);
-        qu.find(node);
+    public void findInvalidNodeThrowsException(int node) {
+        thrown.expect(IndexOutOfBoundsException.class);
+        thrown.expectMessage("invalid node: " + node);
+
+        new QuickUnion(3).find(node);
     }
 
     @Test

@@ -4,25 +4,37 @@ import static org.junit.Assert.assertThat;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 @RunWith(JUnitParamsRunner.class)
 public class PercolationTest {
 
-    @Test(expected = IllegalArgumentException.class)
-    public void throwsExceptionIfSitesNumberIsNonPositive() {
-        new Percolation(0);
+    @Rule
+    public ExpectedException thrown= ExpectedException.none();
+
+    @Test
+    @Parameters({"0","-1"})
+    public void constructorWithInvalidSitesNumberThrowsException(int n) {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("n must be larger than 0");
+
+        new Percolation(n);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     @Parameters({
-        "0, 0",
-        "1, 0",
-        "4, 2"})
-    public void throwsExceptionWhenOpenInvalidSite(int row, int col) {
-        Percolation p = new Percolation(3);
-        p.open(row, col);
+        "0|0|row must be between 1 and n",
+        "4|0|row must be between 1 and n",
+        "1|0|col must be between 1 and n",
+        "1|4|col must be between 1 and n"})
+    public void openInvalidSiteThrowsException(int row, int col, String msg) {
+        thrown.expect(IndexOutOfBoundsException.class);
+        thrown.expectMessage(msg);
+
+        new Percolation(3).open(row, col);
     }
 
     @Test

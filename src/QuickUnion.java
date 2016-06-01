@@ -59,7 +59,7 @@ public class QuickUnion {
 
     private void validate(int p) {
         if (p < 0 || p >= nodes.length) {
-            throw new IndexOutOfBoundsException("Invalid node: " + p);
+            throw new IndexOutOfBoundsException("invalid node: " + p);
         }
     }
 

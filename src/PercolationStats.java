@@ -4,9 +4,7 @@ public class PercolationStats {
 
     private final int gridWidth;
     private final int trials;
-
     private final Random rand = new Random();
-
     private double[] percolationThresholds;
 
     public PercolationStats(int gridWidth, int trials) {
@@ -57,7 +55,7 @@ public class PercolationStats {
         return Math.sqrt(sum / (thresholds.length - 1));
     }
 
-    protected double[] collectPercolationThresholds() {
+    private double[] collectPercolationThresholds() {
         if (percolationThresholds != null) {
             return percolationThresholds;
         }
