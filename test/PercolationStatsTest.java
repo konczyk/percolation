@@ -4,7 +4,6 @@ import static org.junit.Assert.assertThat;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
