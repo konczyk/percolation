@@ -48,22 +48,16 @@ public class PercolationVisualizerConfig {
         PercolationVisualizerConfig config = new PercolationVisualizerConfig();
         JCommander jc = new JCommander(config);
         jc.setProgramName("PercolationVisualizer");
-        if (args.length == 0) {
-            jc.usage();
-            System.exit(0);
-        }
-
         try {
             jc.parse(args);
             config.validate();
+            if (config.help || args.length == 0) {
+                jc.usage();
+                System.exit(0);
+            }
         } catch (ParameterException | IllegalArgumentException e) {
             System.out.println(e.getMessage());
             System.exit(1);
-        }
-
-        if (config.help) {
-            jc.usage();
-            System.exit(0);
         }
 
         return config;
