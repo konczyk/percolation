@@ -24,8 +24,7 @@ Build project:
 
     $ ./gradlew assemble
 
-
-Quick Union client options:
+All clients have built-in help invoked with `-h` or `--help`, e.g.
 
     $ java -cp build/libs/percolation.jar QuickUnionClient -h
 
@@ -37,11 +36,6 @@ Quick Union with data read from standard input:
 
     $ cat data/quickunion.txt | java -cp build/libs/percolation.jar QuickUnionClient -
 
-
-Visualizer options:
-
-    $ java -cp build/libs/percolation.jar PercolationVisualizer -h
-    
 Visualize a 20x20 grid with default fraction of randomly open sites ([see sample animation](data/visualizer1.gif?raw=true)):
 
     $ java -cp build/libs/percolation.jar PercolationVisualizer -gw 20
@@ -53,11 +47,6 @@ Visualize a 20x20 grid with custom fraction of randomly open sites ([see sample 
 Visualize a 20x20 grid with data read from standard input:
 
     $ cat data/percolation.txt | java -cp build/libs/percolation.jar PercolationVisualizer -
-
-
-Stats client options:
-
-    $ java -cp build/libs/percolation.jar PercolationStatsClient -h
 
 Estimate percolation threshold for 20x20 grid and series of 10000 trials:
 
