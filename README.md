@@ -18,6 +18,10 @@ functions except those in `java.lang` and `java.util.Random`
 all its other methods should take constant time plus constant number of calls to
 `QuickUnion` methods
 
+## Enhancements
+- Prevent backwash after the system has percolated (don't mark as full sites
+connected to bottom only)
+
 ## Sample clients 
 
 Build project:
