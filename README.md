@@ -24,7 +24,7 @@ connected to bottom only)
 
 ## Sample clients 
 
-Build project:
+Build a jar file:
 
     $ ./gradlew assemble
 
